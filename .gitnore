@@ -1,0 +1,22 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore model files (if you don't want to track them)
+models/*.pkl
+
+# Ignore data files (if they are large or generated)
+data/images/
+data/custom_images/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore virtual environment
+venv/
+.env/
+
+# Ignore system files
+.DS_Store
+Thumbs.db

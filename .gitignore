@@ -1,6 +1,12 @@
 # Ignore Python cache files
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+.env/
 
 # Ignore model files (if you don't want to track them)
 models/*.pkl
@@ -13,10 +19,10 @@ data/custom_images/
 *.log
 *.tmp
 
-# Ignore virtual environment
-venv/
-.env/
-
 # Ignore system files
 .DS_Store
 Thumbs.db
+
+# Ignore IDE-specific files
+.vscode/
+.idea/

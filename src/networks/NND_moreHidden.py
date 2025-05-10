@@ -66,20 +66,37 @@ class NNDNetworkV2:
 
     def cross_entropy_loss(self, y_true, y_pred):
         return -np.sum(y_true * np.log(np.clip(y_pred, 1e-10, 1.0)), axis=1).mean()
+        # np.clip is used to prevent log(0) which leads to numerical instability
 
     def backward_propagation(self, x, y_true, y_pred, learning_rate=0.01):
-        delta_3 = y_pred - y_true
-        d_weights_hidden2_output = np.dot(self.hidden_layer2_output.T, delta_3)
-        d_bias_output = np.sum(delta_3, axis=0, keepdims=True)
+        
+        """
+    The math of backward propagation involves applying the chain rule to compute the gradient of the loss function
+    with respect to each weight and bias in the network. Matrix operations are used to efficiently propagate these
+    gradients backward through the network, layer by layer, for all samples in a batch simultaneously. This allows
+    us to update the weights and biases to minimize the loss function during training.
+        """
+        
+        
+        delta_3 = y_pred - y_true # Gradient of the loss with respect to the output
+        d_weights_hidden2_output = np.dot(self.hidden_layer2_output.T, delta_3) # Gradient of the loss with respect to the weights (weights being a matrix of shape (hidden_size2, output_size))
+        d_bias_output = np.sum(delta_3, axis=0, keepdims=True) # Gradient of the loss with respect to the bias (bias being a vector of shape (output_size,))
 
-        delta_2 = np.dot(delta_3, self.weights_hidden2_output.T) * sigmoid_derivative(self.hidden_layer2_output)
-        d_weights_hidden1_hidden2 = np.dot(self.hidden_layer1_output.T, delta_2)
-        d_bias_hidden2 = np.sum(delta_2, axis=0, keepdims=True)
+        delta_2 = np.dot(delta_3, self.weights_hidden2_output.T) * sigmoid_derivative(self.hidden_layer2_output) # Gradient of the loss with respect to the hidden layer 2
+        d_weights_hidden1_hidden2 = np.dot(self.hidden_layer1_output.T, delta_2) # Gradient of the loss with respect to the weights (weights being a matrix of shape (hidden_size1, hidden_size2))
+        d_bias_hidden2 = np.sum(delta_2, axis=0, keepdims=True) # Gradient of the loss with respect to the bias (bias being a vector of shape (hidden_size2,))
 
-        delta_1 = np.dot(delta_2, self.weights_hidden1_hidden2.T) * sigmoid_derivative(self.hidden_layer1_output)
-        d_weights_input_hidden1 = np.dot(x.T, delta_1)
-        d_bias_hidden1 = np.sum(delta_1, axis=0, keepdims=True)
+        delta_1 = np.dot(delta_2, self.weights_hidden1_hidden2.T) * sigmoid_derivative(self.hidden_layer1_output) # now we are back to the sigmoid activation function of the first hidden layer
+        d_weights_input_hidden1 = np.dot(x.T, delta_1) # again chain rule, in matrix form
+        d_bias_hidden1 = np.sum(delta_1, axis=0, keepdims=True) # bias is a vector of shape (hidden_size1,)
 
+
+        # Update weights and biases using gradient descent
+        # these are matrices and vectors of the same shape as the weights and biases, and represent the gradient of the loss with respect to each weight and bias
+        # by mutiplying with the learning rate, we take a small step in the direction of the gradient, which is the direction of steepest descent
+        # this will minimize the loss function, and thus improve the performance of the network
+        
+        # think of it as the d_ values representing the with steepest descent, and the learning rate is a small step in that direction
         self.weights_hidden2_output -= learning_rate * d_weights_hidden2_output
         self.bias_output -= learning_rate * d_bias_output
         self.weights_hidden1_hidden2 -= learning_rate * d_weights_hidden1_hidden2

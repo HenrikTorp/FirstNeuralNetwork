@@ -47,7 +47,7 @@ class DigitDrawer:
         
         
         self.nn = NNDNetworkV2(input_size=784, hidden_size1=256, hidden_size2=128, output_size=10)
-        self.nn.load_model("models/last_trained_model.pkl")
+        self.nn.load_model("models/finetuned_model.pkl")
       
     def paint(self, event):
         x, y = event.x, event.y
@@ -116,12 +116,16 @@ class DigitDrawer:
         )
         
             # Save the preprocessed image
-        save_folder = "data/images"
-        os.makedirs(save_folder, exist_ok=True)  # Create the folder if it doesn't exist
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")  # Unique timestamp
-        save_path = os.path.join(save_folder, f"digit_{timestamp}.png")
-        original_image.save(save_path)  # Save the 28x28 image
-        print(f"Saved image to {save_path}")
+        
+        save_image = False  # Set to True if you want to save the image
+        
+        if save_image:
+            save_folder = "data/images"
+            os.makedirs(save_folder, exist_ok=True)  # Create the folder if it doesn't exist
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")  # Unique timestamp
+            save_path = os.path.join(save_folder, f"digit_{timestamp}.png")
+            original_image.save(save_path)  # Save the 28x28 image
+            print(f"Saved image to {save_path}")
 
         print(f"Predicted Label: {predicted_label}")
         

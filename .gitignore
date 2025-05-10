@@ -7,17 +7,21 @@ __pycache__/
 # Ignore virtual environments
 venv/
 .env/
+.conda/
 
-# Ignore model files (if you don't want to track them)
-models/*.pkl
+# Ignore model files (if you want to track only specific ones)
+models/
+!models/*.pkl  # Include only .pkl model files
 
-# Ignore data files (if they are large or generated)
-data/images/
-data/custom_images/
+# Ignore dataset files
+data/
+!data/README.md  # Optionally include a README to describe the dataset structure
 
 # Ignore logs and temporary files
 *.log
 *.tmp
+*.bak
+*.swp
 
 # Ignore system files
 .DS_Store
@@ -26,3 +30,11 @@ Thumbs.db
 # Ignore IDE-specific files
 .vscode/
 .idea/
+*.code-workspace
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore OS-specific files
+*.~lock.*
+*.crdownload

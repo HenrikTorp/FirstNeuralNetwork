@@ -42,3 +42,7 @@ Thumbs.db
 # Ensure assets folder is not ignored
 !assets/
 !assets/*.png  # Explicitly include PNG files in the assets folder
+
+data/
+*.jpg
+*.png

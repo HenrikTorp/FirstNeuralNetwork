@@ -8,6 +8,8 @@ current_dir = os.path.dirname(__file__)
 src_dir = os.path.abspath(os.path.join(current_dir, '..', '..'))
 sys.path.append(src_dir)
 
+# This script is used for testing the accuracy of the models
+
 
 from src.networks.NND_moreHidden import NNDNetworkV2  # Import your neural network class
 

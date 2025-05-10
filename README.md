@@ -21,7 +21,7 @@ Draw a digit on the canvas, and the model will predict the digit in real time.
 For the best results, draw the digit **within the rectangle** provided in the UI. This rectangle helps guide users to draw digits in the correct area for accurate predictions.
 
 Example:
-![Drawing UI Example](assets\digitNN.png)
+![Description of the image](https://raw.githubusercontent.com/HenrikTorp/FirstNeuralNetwork/main/assets/digitNN.png)
 
 
 External ML libraries were only used for:

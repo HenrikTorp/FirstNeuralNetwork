@@ -2,7 +2,7 @@
 
 This project showcases the first neural network I built entirely from scratch, without relying on high-level libraries like TensorFlow, PyTorch, or Scikit-learn for the core implementation. The underlying mathematical structure, including forward propagation, backpropagation, and gradient descent, was implemented using NumPy.
 
-## [Demo video](https://www.youtube.com/watch?v=your-video-id)
+## [Demo video](https://youtube.com/shorts/21mqUb5MMSI?feature=share)
 
 
 External ML libraries were only used for:

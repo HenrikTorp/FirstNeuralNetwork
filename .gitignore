@@ -38,3 +38,5 @@ Thumbs.db
 # Ignore OS-specific files
 *.~lock.*
 *.crdownload
+
+__pycache__/

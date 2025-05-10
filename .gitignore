@@ -36,7 +36,9 @@ Thumbs.db
 .ipynb_checkpoints/
 
 # Ignore OS-specific files
-*.~lock.*
+*.~lock.* 
 *.crdownload
 
-__pycache__/
+# Ensure assets folder is not ignored
+!assets/
+!assets/*.png  # Explicitly include PNG files in the assets folder

@@ -21,6 +21,7 @@ This project demonstrates my understanding of neural networks and machine learni
    ```bash
    git clone https://github.com/your-username/FirstNeuralNetwork.git
    cd FirstNeuralNetwork
+   python -m main
 
 Make sure you have the required packages.
 

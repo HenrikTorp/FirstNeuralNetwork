@@ -95,4 +95,4 @@ See example below.
 
 ## Conclusion
 I had fun making this project. It has its limitations, but it greatly increased my practical
-understanding of how neural networks work, and understanding its limitations itself was very valuable. In future projects, I am excited to experiment with more sophisticated architectures, such as convolutional neural networks (CNNs).
+understanding of how neural networks work, and understanding its limitations in itself was very valuable. In future projects, I am excited to experiment with more sophisticated architectures, such as convolutional neural networks (CNNs).

@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from tensorflow import keras
-from src.networks.NND_moreHidden import NNDNetworkV2  # Import your neural network class
+from src.networks.NND_moreHidden import NNDNetworkV2  # Importing network class
 
 
 (X_train, y_train), (X_test, y_test) = keras.datasets.mnist.load_data()

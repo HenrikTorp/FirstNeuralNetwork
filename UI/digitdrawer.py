@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 import numpy as np
 import os
 import sys
-from src.networks.NND_moreHidden import NNDNetworkV2  # Import your neural network class
+from src.networks.NND_moreHidden import NNDNetworkV2  # Import neural network class
 #from src.prediction.DigitPredictor import DigitPredictor  # Import the DigitPredictor class
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -103,7 +103,7 @@ class DigitDrawer:
         prediction = self.nn.forward_propagation(input_flattened)
         predicted_label = np.argmax(prediction)
         
-            # Clear any previous label from the canvas
+        # Clear any previous label from the canvas
         self.canvas.delete("label")
 
         # Display the predicted label at the top of the canvas

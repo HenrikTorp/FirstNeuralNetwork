@@ -15,9 +15,9 @@ from src.networks.NND_moreHidden import NNDNetworkV2  # Import neural network cl
 # Load trained model
 nn = NNDNetworkV2(input_size=784, hidden_size1=128, hidden_size2=64, output_size=10)
 
-##nn.load_model("fine_tuned_model.pkl")  # Load the fine-tuned model
+nn.load_model("models/finetuned_model.pkl")  # Load the fine-tuned model
 # Load the last trained model
-nn.load_model("models/last_trained_model.pkl")  # Load the last trained model
+##nn.load_model("models/last_trained_model.pkl")  # Load the last trained model
 
 # Path to images folder in the project directory
 folder_path = "data\images"

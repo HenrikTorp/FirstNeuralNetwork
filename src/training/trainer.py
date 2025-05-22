@@ -52,7 +52,7 @@ initial_learning_rate = 0.01  # Initial learning rate
 decay_rate = 0.96  # Decay rate for learning rate  # Initialize learning rate
 best_loss = float('inf')  # Initialize best loss to infinity
 
-batch_size = 128
+batch_size = 128 # this determines how many digits are fed into the neural network at once.
 num_batches = X_train.shape[0] // batch_size
 
 # Train the neural network

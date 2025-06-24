@@ -32,7 +32,7 @@ External ML libraries were only used for:
 After training on the MNIST dataset, the neural network achieved an accuracy of 98% when tested on digits from the dataset it had not yet seen.
 After finetuning it on a custom made dataset, it achieved an accuracy of 91.45% when tested on this dataset, while still retaining a 93.52% accuracy on the MNIST dataset.
 
-There are limitations, however. The neural network performs best when digits are drawn cleanly and likely shows a bias toward my drawing style. And try to draw the digits within the 
+There are limitations, however. The neural network performs best when digits are drawn cleanly and likely shows a bias toward my drawing style. And it needs the digits drawn to be roughly centered. 
 If you want to try it out for yourself, see installation guide below!
 
 
@@ -63,9 +63,9 @@ The neural network is a fully connected feedforward network with two hidden laye
 - **Output Layer**:
   - The output layer consists of **10 neurons**, each representing one of the digits (0-9). The final predictions are made using a softmax activation function.
 
-This architecture was chosen after experimenting with simpler setups, such as a single hidden layer with fewer neurons. The current design provided satisfactory results without introducing unnecessary complexity.
+Initially I tried using a smaller neural network, ended up with this one after trying a few different setups.
 
-While adding more hidden layers or neurons could potentially improve performance, the current architecture is sufficient for a task like digit classification. A convolutional neural network (CNN) could achieve better results, but implementing a CNN was beyond the scope of this project, as it focuses on building a neural network manually from scratch.
+While adding more hidden layers or neurons could potentially improve performance, the current architecture is sufficient for a task like digit classification. A convolutional neural network (CNN) could achieve better results.
 
 
 ## Features

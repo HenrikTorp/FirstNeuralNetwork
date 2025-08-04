@@ -9,9 +9,10 @@ venv/
 .env/
 .conda/
 
-# Ignore model files (if you want to track only specific ones)
+# upload both models
 models/
 !models/*.pkl  # Include only .pkl model files
+
 
 # Ignore dataset files
 data/

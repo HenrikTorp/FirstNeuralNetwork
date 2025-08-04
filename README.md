@@ -86,7 +86,6 @@ See example below.
 
 ## Dependencies
 
-- Python 3.8 or 3.9 (compatibility with tensorflow)
 - NumPy
 - TensorFlow
 - Scikit-learn

@@ -58,7 +58,7 @@ The neural network is a fully connected feedforward network with two hidden laye
 - **Hidden Layers**:
   1. The first hidden layer contains **256 neurons**.
   2. The second hidden layer contains **128 neurons**.
-  - Both layers use sigmoid activation functions to introduce non-linearity and enable the network to learn complex patterns.
+  - Both layers use sigmoid activation functions.
 
 - **Output Layer**:
   - The output layer consists of **10 neurons**, each representing one of the digits (0-9). The final predictions are made using a softmax activation function.

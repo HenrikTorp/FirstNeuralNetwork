@@ -1,97 +1,91 @@
 # Neural Network Project
 
-## Table of Contents
-- [Introduction](#Introduction)
-- [Demo Video](#demo-video)
-- [Results](#results)
-- [How to Run](#how-to-run)
-- [Network Architecture](#network-architecture)
-- [Features](#features)
-- [Interactive Drawing UI](#interactive-drawing-ui)
-- [Dependencies](#dependencies)
-
-
 ## Introduction
-This project showcases the first neural network I built entirely from scratch, without relying on high-level libraries like TensorFlow, PyTorch, or Scikit-learn for the core implementation. The underlying mathematical structure, including forward propagation, backpropagation, with gradient descent of the cross entropy loss function was implemented using NumPy.
 
-## [Demo video](https://youtube.com/shorts/21mqUb5MMSI?feature=share)
+This was my first neural network project. I wanted to understand how neural networks actually learn, so I implemented the forward propagation and backpropagation myself using NumPy.
 
-Draw a digit on the canvas, and the model will predict the digit in real time. 
+The network is trained on the MNIST dataset to recognize handwritten digits. I also made a drawing GUI where you can draw a digit yourself and see what the network predicts.
 
-For the best results, draw the digit **within the rectangle** provided in the UI. This rectangle helps guide users to draw digits in the correct area for accurate predictions.
-
-Example:
-![Description of the image](https://raw.githubusercontent.com/HenrikTorp/FirstNeuralNetwork/main/assets/digitNN.png)
-
-
-External ML libraries were only used for:
-- **Dataset Loading**: TensorFlow was used to import the MNIST dataset, and for one-hot encoding the labels.
-- **Preprocessing**: Scikit-learn's `train_test_split` was used to split the custom made dataset into sets for training and testing (MNIST from keras comes premade with training and testing splits)
-
-## Results
-After training on the MNIST dataset, the neural network achieved an accuracy of 98% when tested on digits from the dataset it had not yet seen.
-After finetuning it on a custom made dataset, it achieved an accuracy of 91.45% when tested on this dataset, while still retaining a 93.52% accuracy on the MNIST dataset.
-
-There are limitations, however. The neural network performs best when digits are drawn cleanly and likely shows a bias toward my drawing style. And it needs the digits drawn to be roughly centered. 
-If you want to try it out for yourself, see installation guide below!
-
+The initial version did not preprocess the drawings in exactly the same format as MNIST, so there was a significant drop in accuracy on drawings from the GUI compared with MNIST. I have now tried to preprocess the drawings from the GUI to match MNIST more closely, using scaling and centering.
 
 ## How to Run
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/FirstNeuralNetwork.git
-   cd FirstNeuralNetwork
-   python -m main
+Use **Python 3.11** with Tkinter available. Before creating the environment, check that `python --version` reports Python 3.11.
 
-Ensure the required dependencies are installed before running the project.
+Clone the repository:
 
+```bash
+git clone https://github.com/HenrikTorp/FirstNeuralNetwork.git
+cd FirstNeuralNetwork
+```
 
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate it in Windows PowerShell:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Install the dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+The GUI requires `models/digit_recog.pkl`. If that checkpoint is not included, train the network first. For training, download the [MNIST archive](https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz) and place it at `data/mnist.npz`, or edit `MNIST_PATH` in `src/data.py` to use another local archive.
+
+```bash
+python -m src.training.trainer
+```
+
+After each completed epoch, training saves the loss and accuracy history and run settings to `models/digit_recog_history.json`. To redraw the loss plot from that file without training again:
+
+```bash
+python -m src.training.plots
+```
+
+Launch the drawing GUI from the repository root:
+
+```bash
+python -m main
+```
+
+Draw a digit and click **Predict**. Select **Show scores** to inspect the model's output for each digit, or click **Clear** to start again.
 
 ## Network Architecture
 
-The neural network is a fully connected feedforward network with two hidden layers. The architecture was designed to balance simplicity and performance, making it well-suited for tasks like digit classification.
+When I first made this, I used sigmoid as the activation function. I have since switched the hidden layers to ReLU, which is less prone to vanishing gradients. For a network as small as this, sigmoid is still a reasonable choice, and it has certain advantages as well.
 
-- **Input Layer**:
-  - The input consists of 28x28 grayscale images, flattened into a vector of 784 neurons. Each pixel value is normalized to the range [0, 1].
+The architecture of the network is 784 input neurons (28×28 pixels flattened into a vector), and two hidden layers of 256 and 128 neurons respectively, followed by 10 outputs using softmax. There is no big trick to this particular architecture; it just seems to work reasonably well for a relatively simple classification problem like MNIST.
 
-- **Hidden Layers**:
-  1. The first hidden layer contains **256 neurons**.
-  2. The second hidden layer contains **128 neurons**.
-  - Both layers use sigmoid activation functions.
+I also implemented Adam in NumPy. Training uses validation loss for early stopping and restores the weights from the best epoch.
 
-- **Output Layer**:
-  - The output layer consists of **10 neurons**, each representing one of the digits (0-9). The final predictions are made using a softmax activation function.
+## Mathematical fixes
 
-Initially I tried using a smaller neural network, ended up with this one after trying a few different setups.
+Two parts of the original implementation were corrected during cleanup:
 
-While adding more hidden layers or neurons could potentially improve performance, the current architecture is sufficient for a task like digit classification. A convolutional neural network (CNN) could achieve better results.
+- **Gradient averaging:** the loss was averaged across each batch, but the gradients were summed. The gradients are now divided by the actual batch size so they match the mean loss.
+- **Cross-entropy calculation:** the original calculation clipped very small probabilities before taking their logarithm. This capped the reported loss for very confident wrong predictions, while backpropagation continued producing gradients. The loss is now calculated directly from the scores before softmax, avoiding that mismatch.
 
+## Data augmentation
 
-## Features
+I augment the training images with changes to position, shape and stroke width, plus mild blur and noise. Validation and test images are left unchanged.
 
-- Fully implemented feedforward neural network from scratch using NumPy.
-- Supports training, fine-tuning, and testing on both MNIST and custom datasets.
-- Implements key machine learning concepts:
-  - Forward propagation
-  - Backpropagation
-  - Gradient descent with learning rate decay
-  - Early stopping
+![Examples of each augmentation and their combined effect](assets/augmentation_examples.png)
 
-## Interactive Drawing UI: 
-Draw a digit on the canvas, and the model will predict the digit in real time.
-See example below.
+## Results
 
+The network achieved **99.09% accuracy on the MNIST test set** and correctly classified **all 141 saved drawings**.
 
+The selected model came from epoch 121, with a validation loss of 0.0368.
 
-## Dependencies
+![Training and validation loss with the selected epoch marked](assets/training_plot.png)
 
-- NumPy
-- TensorFlow
-- Scikit-learn
-- Pillow
+## Demo
 
-
-## Conclusion
-I had fun making this project. It has its limitations, but it greatly increased my practical
-understanding of how neural networks work, and understanding its limitations in itself was very valuable. In future projects, I am excited to experiment with more sophisticated architectures, such as convolutional neural networks (CNNs).
+![Digit Drawer predicting a hand-drawn 6](assets/digit_drawer.png)

@@ -9,11 +9,10 @@ import tkinter as tk
 from PIL import Image, ImageDraw
 import numpy as np
 import os
-import sys
 from src.networks.NND_moreHidden import NNDNetworkV2  # Import neural network class
 #from src.prediction.DigitPredictor import DigitPredictor  # Import the DigitPredictor class
-import matplotlib.pyplot as plt
 from datetime import datetime
+from src.data import preprocess_digit
 
 class DigitDrawer:
     def __init__(self, master):
@@ -21,8 +20,6 @@ class DigitDrawer:
         self.master.title("Digit Drawer")
         self.canvas_width = 280 
         self.canvas_height = 280
-        self.canvas = tk.Canvas(master, width=self.canvas_width, height=self.canvas_height, bg="white")
-        
         self.canvas = tk.Canvas(master, width=self.canvas_width, height=self.canvas_height, bg="white")
 
         # Add a faint rectangle in the center of the canvas
@@ -35,7 +32,11 @@ class DigitDrawer:
         # Pack the canvas
         self.canvas.pack()
         
+        self.last_point = None
+        self.canvas.bind("<ButtonPress-1>", self.paint)
         self.canvas.bind("<B1-Motion>", self.paint)
+        self.canvas.bind("<ButtonRelease-1>", self.end_stroke)
+        self.canvas.bind("<Leave>", self.end_stroke)
         self.image = Image.new("L", (self.canvas_width, self.canvas_height), 255)  # White background
         self.draw = ImageDraw.Draw(self.image)
         self.button_frame = tk.Frame(master)
@@ -44,18 +45,64 @@ class DigitDrawer:
         self.clear_button.pack(side=tk.LEFT)
         self.predict_button = tk.Button(self.button_frame, text="Predict", command=self.predict_digit)
         self.predict_button.pack(side=tk.LEFT)
+
+        self.show_scores = tk.BooleanVar(value=False)
+        self.last_scores = None
+        self.score_toggle = tk.Checkbutton(
+            self.button_frame, text="Show scores", variable=self.show_scores,
+            command=self.update_score_display
+        )
+        self.score_toggle.pack(side=tk.LEFT)
+        self.score_label = tk.Label(master, justify=tk.LEFT, anchor="w")
         
         
         self.nn = NNDNetworkV2(input_size=784, hidden_size1=256, hidden_size2=128, output_size=10)
-        self.nn.load_model("models/finetuned_model.pkl")
+        self.nn.load_model("models/digit_recog.pkl")
       
+    def clear_prediction(self):
+        self.canvas.delete("label")
+        self.last_scores = None
+        self.update_score_display()
+
+    def update_score_display(self):
+        if not self.show_scores.get():
+            self.score_label.pack_forget()
+            return
+
+        if self.last_scores is None:
+            text = "Click Predict to see scores."
+        else:
+            text = "Softmax scores\n" + "\n".join(
+                f"{digit}: {score * 100:.1f}%"
+                for digit, score in enumerate(self.last_scores)
+            )
+
+        self.score_label.configure(text=text)
+        self.score_label.pack(fill=tk.X)
+
     def paint(self, event):
         x, y = event.x, event.y
         r = 8
-        self.canvas.create_oval(x - r, y - r, x + r, y + r, fill="black")
+        self.clear_prediction()
+        if self.last_point is not None:
+            previous_x, previous_y = self.last_point
+            self.canvas.create_line(
+                previous_x, previous_y, x, y,
+                width=2 * r, fill="black", capstyle=tk.ROUND
+            )
+            self.draw.line([self.last_point, (x, y)], fill=0, width=2 * r)
+        self.canvas.create_oval(
+            x - r, y - r, x + r, y + r, fill="black", outline=""
+        )
         self.draw.ellipse([x - r, y - r, x + r, y + r], fill=0)
-        
+        self.last_point = (x, y)
+
+    def end_stroke(self, event):
+        self.last_point = None
+
     def clear_canvas(self):
+        self.last_point = None
+        self.clear_prediction()
         self.canvas.delete("all")
         self.image = Image.new("L", (self.canvas_width, self.canvas_height), 255)
         self.draw = ImageDraw.Draw(self.image)
@@ -74,15 +121,12 @@ class DigitDrawer:
             
     def predict_digit(self):
         
-         # preprocess the image to match the MNIST dataset format
-        # Resize the image to 28x28 pixels
         original_image = self.image.copy()
-        resized_image = self.image.resize((28, 28), Image.Resampling.LANCZOS)
-        # Convert the image to a numpy array and normalize it
-        input_array = np.array(resized_image)
-        # Invert the colors (white background to black and vice versa)
-        input_array = 255 - input_array
-        input_array = input_array / 255.0
+        input_array = preprocess_digit(self.image)
+        if input_array is None:
+            self.clear_prediction()
+            print("Draw a digit before predicting.")
+            return
         
         
         
@@ -91,6 +135,7 @@ class DigitDrawer:
               
         # uncomment this to see the image before prediction
         
+        # import matplotlib.pyplot as plt
         # plt.imshow(input_array, cmap='gray')
         # plt.axis('off')
         # plt.show()
@@ -102,6 +147,8 @@ class DigitDrawer:
         # Make a prediction using the neural network
         prediction = self.nn.forward_propagation(input_flattened)
         predicted_label = np.argmax(prediction)
+        self.last_scores = prediction[0].copy()
+        self.update_score_display()
         
         # Clear any previous label from the canvas
         self.canvas.delete("label")

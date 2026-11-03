@@ -1,49 +1,37 @@
-# Ignore Python cache files
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Ignore virtual environments
+# Virtual environments
 venv/
+.venv/
 .env/
 .conda/
 
-# upload both models
-models/
-!models/*.pkl  # Include only .pkl model files
+# Downloaded MNIST archive
+data/mnist.npz
 
+# Generated outputs, except the published model and its history
+models/*
+!models/digit_recog.pkl
+!models/digit_recog_history.json
 
-# Ignore dataset files
-data/
-!data/README.md  # Optionally include a README to describe the dataset structure
+# Editor settings
+.vscode/
+.idea/
+*.code-workspace
+.ipynb_checkpoints/
 
-# Ignore logs and temporary files
+# Logs and temporary files
 *.log
 *.tmp
 *.bak
 *.swp
 
-# Ignore system files
+# System files
 .DS_Store
 Thumbs.db
-
-# Ignore IDE-specific files
-.vscode/
-.idea/
-*.code-workspace
-
-# Ignore Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
-# Ignore OS-specific files
-*.~lock.* 
+*.~lock.*
 *.crdownload
-
-# Ensure assets folder is not ignored
-!assets/
-!assets/*.png  # Explicitly include PNG files in the assets folder
-
-data/
-*.jpg
-*.png
